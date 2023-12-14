@@ -11,6 +11,7 @@
 Servo servo1;
 Servo servo2;
 
+// To store both angle values in one variable. Includes a simple print function for debugging.
 struct Angles {
   double x;
   double y;
@@ -31,7 +32,7 @@ struct Angles {
 };
 
 
-#define LENGTH 2
+#define LENGTH 5
 
 Angles average[LENGTH];
 int averageLength = 0;
@@ -70,6 +71,7 @@ void loop(void) {
   // delay(300);
 }
 
+// Get the anlges from acceleration.
 Angles getAnglesFromAcc(double accX, double accY, double accZ) {
 
   double angleX = atan(accX / accZ) * 180 / PI;
@@ -78,6 +80,7 @@ Angles getAnglesFromAcc(double accX, double accY, double accZ) {
   return Angles(angleX, angleY);
 }
 
+// Get the average angle from the array of values.
 Angles getAverage(Angles average[], int length) {
   float x = 0;
   float y = 0;
@@ -95,16 +98,17 @@ Angles getAverage(Angles average[], int length) {
   return angle;
 }
 
+// Shift the array one step to the left.
 void shiftAverage(Angles average[], int length) {
   // Move second element to pos 1, move third element to pos 2, move fourth element to pos 3, etc.
   for (int i = 1; i < length; i++) {
     average[i - 1].x = average[i].x;
     average[i - 1].y = average[i].y;
-    Serial.print("[" + String(i) + "]");
-    average[i].print();
   }
 }
 
+// Fill the average array. If the array is not full it adds the next item to the end of the array.
+// Otherwise, it shifts the array and adds it to the end. see `shiftAverage`
 void fillAverage(Angles *average, int length,  Angles angle) {
   
   if (length < LENGTH) {
